@@ -8,4 +8,3 @@ require('./config/routes')(app)
 app.listen(8080, () => {
     console.log("Backend Executando")
 })
-
