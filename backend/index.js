@@ -7,6 +7,6 @@ app.use(express.json());
 
 require('./config/routes')(app)
 
-app.listen(3030, () => {
+app.listen(8080, () => {
     console.log("Backend Executando")
 })
