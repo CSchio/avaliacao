@@ -1,4 +1,4 @@
-const { existsOrError, numberOfElementsOrError } = require('./validation')
+const { existsOrError, validateInterlace, validateArray } = require('./validation')
 
 function ordenaLista (req, res) {
     const listas = req.body.listas ? req.body.listas : null
@@ -6,7 +6,9 @@ function ordenaLista (req, res) {
         existsOrError(listas, "Listas deve englobar salaN e salaS inválido")
         existsOrError(listas.salaN, "salaN deve existir e ser um array numérico")
         existsOrError(listas.salaS, "salaS deve existir e ser um array de strings")
-        listas.salaN.sort()
+        validateArray(listas.salaN, "number", "salaN precisa ser um array de números")
+        validateArray(listas.salaS, "string", "salaS precisa ser um array de strings")
+        listas.salaN.sort((a, b) => a - b)
         listas.salaS.sort()
     }
     catch(msg){
@@ -21,8 +23,8 @@ function interlace (req, res) {
     try {
         existsOrError(intervaloA, "IntervaloA inexistente")
         existsOrError(intervaloB, "IntervaloB inexistente")
-        numberOfElementsOrError(intervaloA, 2, "IntervaloA deve ser um array numérico de dois elementos")
-        numberOfElementsOrError(intervaloB, 2, "IntervaloB deve ser um array numérico de dois elementos")
+        validateInterlace(intervaloA, 2, "IntervaloA deve ser um array com dois números")
+        validateInterlace(intervaloB, 2, "IntervaloB deve ser um array com dois números")
     }
     catch(msg){
         return res.status(400).send(msg)
