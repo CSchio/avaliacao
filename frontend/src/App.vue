@@ -32,7 +32,5 @@ body {
   text-align: center;
   
   color: #fff;
-  margin-top: 20px;
-  
 }
 </style>

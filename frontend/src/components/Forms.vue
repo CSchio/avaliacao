@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     OrdenaLista(){
-      const ApiUrl = "http://127.0.0.1:3030/ordenaLista"
+      const ApiUrl = "http://localhost:8080/ordenaLista"
       try {
         const json = JSON.parse(this.requestJsonOrdenaLista)
         axios.post(ApiUrl, json).then( res => {
@@ -56,7 +56,7 @@ export default {
         }
     },
     Interlace(){
-      const apiUrl = "http://127.0.0.1:3030/interlace"
+      const apiUrl = "http://localhost:8080/interlace"
       try {
         const json = JSON.parse(this.requestJsonInterlace)
         axios.get(apiUrl, {params: json}).then( res => {
