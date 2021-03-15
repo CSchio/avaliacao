@@ -4,17 +4,15 @@
     <div class="forms-grid">
       <div class="column">
         <h3>Ordena Lista: </h3>
-        <textarea class="json" name="json"></textarea>
-        <button type="submit">Enviar</button>
-        <textarea disabled class="response"></textarea>
+        <textarea spellcheck="false" class="json" v-model="requestJsonOrdenaLista"></textarea>
+        <button type="submit" @click="OrdenaLista">Enviar</button>
+        <textarea disabled spellcheck="false" class="response" v-model="responseJsonOrdenaLista"></textarea>
       </div> 
       <div class="column">
         <h3>Interlace: </h3>
-        <textarea class="json" name="json"></textarea>
-        <button type="submit">Enviar</button>
-        <textarea disabled class="response">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce lacinia posuere posuere. Ut eget facilisis neque. Quisque sed quam ultrices, mattis est id, posuere velit. Curabitur quis pellentesque augue. Vestibulum in mattis sem. Phasellus fringilla, quam eget efficitur fringilla, risus mi pellentesque risus, ac scelerisque diam nulla at turpis. Nullam et leo vestibulum, congue nisi nec, pharetra ex. Sed non odio a justo dictum laoreet eget vel lacus. Sed cursus, arcu id ornare sodales, mauris erat imperdiet leo, et euismod sem nisl eu urna. In ultricies magna vel mi dapibus aliquam.
-        </textarea>
+        <textarea spellcheck="false" class="json" v-model="requestJsonInterlace"></textarea>
+        <button type="submit" @click="Interlace">Enviar</button>
+        <textarea disabled spellcheck="false" class="response" v-model="responseJsonInterlace"></textarea>
       </div> 
     </div>
     
@@ -22,12 +20,65 @@
 </template>
 
 <script>
+import axios from 'axios'
+import stringify from 'json-stringify-pretty-compact'
+
 export default {
-  name: 'Forms'
+  name: 'Forms',
+  data: function() {
+    return {
+      requestJsonOrdenaLista: `{
+        "listas": {
+          "salaN": [ 1, 5, 7, 8, 9 ],
+          "salaS": [ "a", "x", "n" ]
+        }
+      }`,
+      responseJsonOrdenaLista: "",
+      requestJsonInterlace: `{
+        "intervaloA": [ 20, 40 ],
+        "intervaloB": [ 10, 20 ]
+      }`,
+      responseJsonInterlace: ""
+    }
+  },
+  methods: {
+    OrdenaLista(){
+      const ApiUrl = "http://127.0.0.1:3030/ordenaLista"
+      try {
+        const json = JSON.parse(this.requestJsonOrdenaLista)
+        axios.post(ApiUrl, json).then( res => {
+          this.responseJsonOrdenaLista = stringify(res.data, {maxLength: 40, indent: 2})
+        })
+        .catch(msg => {this.responseJsonOrdenaLista = msg.response.data})
+      }
+      catch(msg){
+          this.responseJsonOrdenaLista = "Json inválido"
+        }
+    },
+    Interlace(){
+      const apiUrl = "http://127.0.0.1:3030/interlace"
+      try {
+        const json = JSON.parse(this.requestJsonInterlace)
+        axios.get(apiUrl, {params: json}).then( res => {
+          this.responseJsonInterlace = stringify(res.data, {maxLength: 40, indent: 2})
+        })
+        .catch(msg => {this.responseJsonInterlace = msg.response.data})
+      }
+      catch(msg){
+        this.responseJsonInterlace = "Json inválido"
+      }
+    },
+    prettyPrint() {
+      this.requestJsonOrdenaLista = stringify(JSON.parse(this.requestJsonOrdenaLista), {maxLength: 40, indent: 2}) 
+      this.requestJsonInterlace = stringify(JSON.parse(this.requestJsonInterlace), {maxLength: 40, indent: 2}) 
+    }
+  },
+  mounted() {
+      this.prettyPrint()
+    }  
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .forms {
   width: 100vh;
@@ -55,22 +106,17 @@ h1 {
 }
 
 .json {
-  overflow: hidden;
   white-space: nowrap;
   resize: vertical;
-  background-color: #f8f8f800;
-  color: rgba(255, 255, 255, 0.76);
-  max-width: 100%;
-  width: 100%;
   font-size: 16px;
   height: 150px;
-  border: 0;
   border: 1px solid rgba(187, 187, 187, 0.466);
   padding: 3px 8px;
   outline: none;
 }
 
 .forms > .forms-grid > .column > button {
+  outline: none;
   width: 100px;
   height: 25px;
   margin: 15px;
@@ -79,14 +125,26 @@ h1 {
   color: rgba(255, 255, 255, 0.76);
 }
 
-.response {
+.forms > .forms-grid > .column > button:active {
+  width: 100px;
+  height: 25px;
+  margin: 15px;
+  border: 1px solid rgba(9, 150, 103, 0.938);
+  background-color: rgba(9, 150, 103, 0.938);
+  color: rgba(255, 255, 255, 0.76);
+}
+
+textarea{
   background-color: #f8f8f800;
   color: rgba(255, 255, 255, 0.76);
-  resize: none;
   max-width: 100%;
-  border: 0;
-  height: 300px;
   width: 100%;
+  border: 0;
+}
+
+.response {
+  resize: none;
+  height: 300px;
 }
 
 </style>
